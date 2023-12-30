@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:http-mockserver="http://www.mulesoft.org/schema/mule/http-mockserver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/http-mockserver http://www.mulesoft.org/schema/mule/http-mockserver/current/mule-http-mockserver.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<munit:config name="mule-http-mockserver-demo-test-suite.xml" />
+	<munit:dynamic-port propertyName="http.port"/>
+	<http-mockserver:config name="HTTP_MockServer_Config" doc:name="HTTP MockServer Config" doc:id="373bdb5a-08b2-4a3a-a73c-d04eda271ce6">
+		<http-mockserver:connection port="${http.port}" />
+	</http-mockserver:config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="e9362051-4feb-426c-ab4f-51c6d4d3998d" >
+		<http:request-connection host="0.0.0.0" port="${http.port}" />
+	</http:request-config>
+	<munit:before-test name="mule-http-mockserver-demo-test-suiteBefore_Suite" doc:id="c3dd89fa-0a60-4b79-8904-74aa3699b717">
+		<http-mockserver:reset-expectations doc:name="reset expectations" doc:id="7f7169da-1260-4f36-8b4b-c695178309db" config-ref="HTTP_MockServer_Config"/>
+	</munit:before-test>
+	<munit:test name="http-mock-at-least" doc:id="faf60afd-0a61-415f-aab0-3f0565e49432" description="Set Valid expectation with at least verifier">
+		<munit:behavior >
+			<http-mockserver:set-expectation doc:name="Set expectation" doc:id="7f7169da-1260-4f36-8b4b-c695178309db" config-ref="HTTP_MockServer_Config">
+				<http-mockserver:expectation ><![CDATA[#[output application/json
+---
+{
+	"id": "valid-expectation-id",
+  "httpRequest" : {
+    "method" : "GET",
+    "path" : "/api/info"
+  },
+  "httpResponse" : {
+    "body" : "some_response_body",
+    "statusCode": 201
+  }
+}]]]></http-mockserver:expectation>
+			</http-mockserver:set-expectation>
+		</munit:behavior>
+		<munit:execution>
+			<http:request method="GET" doc:name="Request" doc:id="1602b9a6-8f56-4922-9f3f-e8271181a9d1" config-ref="HTTP_Request_configuration" path="/api/info"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="9398ad09-9be7-40e4-a60f-7ffc097c7d75" actual="#[attributes.statusCode]" expected="#[201]"/>
+			<http-mockserver:verify-expectation comparison="AT_LEAST" doc:name="Verify expectation" doc:id="c13ab41a-c81d-4eea-8cef-bae138a250bd" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id" count="1"/>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="http-mock-at-most" doc:id="faf60afd-0a61-415f-aab0-3f0565e49432" description="Set Valid expectation with at most verifier">
+		<munit:behavior >
+			<http-mockserver:set-expectation doc:name="Set expectation" doc:id="7f7169da-1260-4f36-8b4b-c695178309db" config-ref="HTTP_MockServer_Config">
+				<http-mockserver:expectation ><![CDATA[#[output application/json
+---
+{
+	"id": "valid-expectation-id",
+  "httpRequest" : {
+    "method" : "GET",
+    "path" : "/api/info"
+  },
+  "httpResponse" : {
+    "body" : "some_response_body",
+    "statusCode": 201
+  }
+}]]]></http-mockserver:expectation>
+			</http-mockserver:set-expectation>
+		</munit:behavior>
+		<munit:execution>
+			<http:request method="GET" doc:name="Request" doc:id="1602b9a6-8f56-4922-9f3f-e8271181a9d1" config-ref="HTTP_Request_configuration" path="/api/info"/>
+			<http:request method="GET" doc:name="Request Again" doc:id="1602b9a6-8f56-4922-9f3f-e8271181a9d1" config-ref="HTTP_Request_configuration" path="/api/info"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="9398ad09-9be7-40e4-a60f-7ffc097c7d75" actual="#[attributes.statusCode]" expected="#[201]"/>
+			<http-mockserver:verify-expectation comparison="AT_MOST" doc:name="Verify expectation" doc:id="c13ab41a-c81d-4eea-8cef-bae138a250bd" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id" count="2"/>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="http-mock-exactly" doc:id="faf60afd-0a61-415f-aab0-3f0565e49432" description="Set Valid expectation with exact verifier">
+		<munit:behavior >
+			<http-mockserver:set-expectation doc:name="Set expectation" doc:id="7f7169da-1260-4f36-8b4b-c695178309db" config-ref="HTTP_MockServer_Config">
+				<http-mockserver:expectation ><![CDATA[#[output application/json
+---
+{
+	"id": "valid-expectation-id",
+  "httpRequest" : {
+    "method" : "GET",
+    "path" : "/api/info"
+  },
+  "httpResponse" : {
+    "body" : "some_response_body",
+    "statusCode": 201
+  }
+}]]]></http-mockserver:expectation>
+			</http-mockserver:set-expectation>
+		</munit:behavior>
+		<munit:execution>
+			<http:request method="GET" doc:name="Request" doc:id="1602b9a6-8f56-4922-9f3f-e8271181a9d1" config-ref="HTTP_Request_configuration" path="/api/info"/>
+			<http:request method="GET" doc:name="Request Again" doc:id="1602b9a6-8f56-4922-9f3f-e8271181a9d1" config-ref="HTTP_Request_configuration" path="/api/info"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="9398ad09-9be7-40e4-a60f-7ffc097c7d75" actual="#[attributes.statusCode]" expected="#[201]"/>
+			<http-mockserver:verify-expectation comparison="EXACTLY" doc:name="Verify expectation" doc:id="c13ab41a-c81d-4eea-8cef-bae138a250bd" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id" count="2"/>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="http-mock-exactly-fails" doc:id="faf60afd-0a61-415f-aab0-3f0565e49432" description="Set Valid expectation with exact verifier to fail"  expectedErrorDescription="Request not found exactly 2 times" >
+		<munit:behavior >
+			<http-mockserver:set-expectation doc:name="Set expectation" doc:id="7f7169da-1260-4f36-8b4b-c695178309db" config-ref="HTTP_MockServer_Config">
+				<http-mockserver:expectation ><![CDATA[#[output application/json
+---
+{
+	"id": "valid-expectation-id",
+  "httpRequest" : {
+    "method" : "GET",
+    "path" : "/api/info"
+  },
+  "httpResponse" : {
+    "body" : "some_response_body",
+    "statusCode": 201
+  }
+}]]]></http-mockserver:expectation>
+			</http-mockserver:set-expectation>
+		</munit:behavior>
+		<munit:execution>
+			<http:request method="GET" doc:name="Request" doc:id="1602b9a6-8f56-4922-9f3f-e8271181a9d1" config-ref="HTTP_Request_configuration" path="/api/info"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="9398ad09-9be7-40e4-a60f-7ffc097c7d75" actual="#[attributes.statusCode]" expected="#[201]"/>
+			<http-mockserver:verify-expectation comparison="EXACTLY" doc:name="Verify expectation" doc:id="c13ab41a-c81d-4eea-8cef-bae138a250bd" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id" count="2"/>
+		</munit:validation>
+	</munit:test>
+
+</mule>
