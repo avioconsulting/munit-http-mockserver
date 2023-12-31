@@ -71,8 +71,10 @@ Following test uses above configuration to set an expectation and verification u
       <http-mockserver:verify-expectation comparison="AT_LEAST" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id-1" count="1"/>
     </munit:validation>
   </munit:test>
-
 ```
+
+To reduce the HTTP logging from MockServer, you may set `org.mockserver.log.MockServerEventLog` category to `WARN`.
+
 See [modules tests](./src/test/munit/) for more examples and  [connector documentation](./docs/1.0.x/http-mockserver-documentation.adoc) for supported operations.
 
 Resources to learn about MockServer usage -
