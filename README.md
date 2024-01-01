@@ -10,8 +10,8 @@ Add this dependency to your application pom.xml
 
 ```
 <groupId>com.avioconsulting</groupId>
-<artifactId>mule-http-mockserver</artifactId>
-<version>${mule-http-mockserver.version}</version>
+<artifactId>munit-http-mockserver</artifactId>
+<version>${munit-http-mockserver.version}</version>
 <classifier>mule-plugin</classifier>
 <scope>test</scope>
 ```
@@ -26,7 +26,7 @@ Consider a Mule app with following HTTP Request configuration and usage -
     <http:request-connection host="0.0.0.0" port="8081" />
   </http:request-config>
 
-    <flow name="mule-http-mockserver-demoFlow">
+    <flow name="munit-http-mockserver-demoFlow">
         <http:request method="GET" config-ref="HTTP_Request_configuration" path="/api/info"/>
     </flow>
 
@@ -64,7 +64,7 @@ Following test uses above configuration to set an expectation and verification u
       </http-mockserver:set-expectation>
     </munit:behavior>
     <munit:execution>
-      <flow-ref name="mule-http-mockserver-demoFlow"/>
+      <flow-ref name="munit-http-mockserver-demoFlow"/>
     </munit:execution>
     <munit:validation>
       <munit-tools:assert-equals actual="#[attributes.statusCode]" expected="#[201]"/>

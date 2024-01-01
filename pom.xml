@@ -8,7 +8,7 @@
     <artifactId>avio-mule-modules-parent</artifactId>
     <version>1.3.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>mule-http-mockserver</artifactId>
+  <artifactId>munit-http-mockserver</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>mule-extension</packaging>
   <description>AVIO Mule Modules Parent</description>
@@ -32,6 +32,12 @@
       <groupId>org.mock-server</groupId>
       <artifactId>mockserver-netty-no-dependencies</artifactId>
       <version>5.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.runtime</groupId>
+      <artifactId>mule-service-http-api</artifactId>
+      <version>${mule.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mule.connectors</groupId>
