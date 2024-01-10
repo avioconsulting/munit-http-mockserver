@@ -11,8 +11,8 @@
   <artifactId>munit-http-mockserver</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>mule-extension</packaging>
-  <description>AVIO Mule Modules Parent</description>
-
+  <description>MUnit HTTP MockServer</description>
+  <url>${repository.https.url}</url>
   <developers>
     <developer>
       <name>Adam DesJardin</name>
@@ -27,6 +27,11 @@
       <organizationUrl>https://www.avioconsulting.com</organizationUrl>
     </developer>
   </developers>
+  <scm>
+    <connection>scm:git:${repository.url}</connection>
+    <developerConnection>scm:ssh:${repository.url}</developerConnection>
+    <url>${repository.https.url}</url>
+  </scm>
   <dependencies>
     <dependency>
       <groupId>org.mock-server</groupId>
@@ -61,5 +66,16 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>oss.sonatype.org-snapshot</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </repository>
+  </repositories>
 </project>
