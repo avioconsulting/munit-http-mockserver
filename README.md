@@ -77,7 +77,7 @@ Following test uses above configuration to set an expectation and verification u
 
 To reduce the HTTP logging from MockServer, you may set `org.mockserver.log.MockServerEventLog` category to `WARN`.
 
-See [modules tests](./src/test/munit/) for more examples and  [connector documentation](./docs/1.0.x/http-mockserver-documentation.adoc) for supported operations.
+See [modules tests](./src/test/munit/) for more examples and  [connector documentation](./docs/1.0.x/munit-http-mockserver-documentation.adoc) for supported operations.
 
 Resources to learn about MockServer usage -
 - https://github.com/mock-server/mockserver/blob/master/mockserver-examples/json_examples.md
