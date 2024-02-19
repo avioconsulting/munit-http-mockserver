@@ -1,0 +1,250 @@
+
+
+= MUnit HTTP MockServer Module Connector Reference
+
+
+
+== Configurations
+---
+[[Config]]
+=== Config
+
+
+Default configuration
+
+
+==== Parameters
+
+[%header%autowidth.spread]
+|===
+| Name | Type | Description | Default Value | Required
+|Name | String | The name for this configuration. Connectors reference the configuration with this name. | | *x*{nbsp}
+| Connection a| <<Config_Connection, Connection>>
+ | The connection types that can be provided to this configuration. | | *x*{nbsp}
+| Name a| String |  The identifier of this element used to reference it in other components |  | *x*{nbsp}
+| Expiration Policy a| <<ExpirationPolicy>> |  Configures the minimum amount of time that a dynamic configuration instance can remain idle before the runtime considers it eligible for expiration. This does not mean that the platform will expire the instance at the exact moment that it becomes eligible. The runtime will actually purge the instances when it sees it fit. |  | {nbsp}
+|===
+
+==== Connection Types
+[[Config_Connection]]
+===== Connection
+
+
+====== Parameters
+
+[%header%autowidth.spread]
+|===
+| Name | Type | Description | Default Value | Required
+| Mockserver Properties file a| String |  |  mockserver.properties | {nbsp}
+| HTTP Port a| Number |  |  | *x*{nbsp}
+| Reconnection a| <<Reconnection>> |  When the application is deployed, a connectivity test is performed on all connectors. If set to true, deployment will fail if the test doesn't pass after exhausting the associated reconnection strategy |  | {nbsp}
+|===
+
+==== Associated Operations
+* <<ClearExpectation>> {nbsp}
+* <<ClearExpectationId>> {nbsp}
+* <<ResetExpectations>> {nbsp}
+* <<SetExpectation>> {nbsp}
+* <<VerifyExpectation>> {nbsp}
+
+
+
+== Operations
+
+[[ClearExpectation]]
+== Clear Expectation
+`<http-mockserver:clear-expectation>`
+
+
+=== Parameters
+
+[%header%autowidth.spread]
+|===
+| Name | Type | Description | Default Value | Required
+| Configuration | String | The name of the configuration to use. | | *x*{nbsp}
+| Matcher a| Binary |  |  #[payload] | {nbsp}
+| Config Ref a| ConfigurationProvider |  The name of the configuration to be used to execute this component |  | *x*{nbsp}
+| Reconnection Strategy a| * <<Reconnect>>
+* <<ReconnectForever>> |  A retry strategy in case of connectivity errors |  | {nbsp}
+|===
+
+
+=== For Configurations
+
+* <<Config>> {nbsp}
+
+=== Throws
+
+* HTTP-MOCKSERVER:CONNECTIVITY {nbsp}
+* HTTP-MOCKSERVER:RETRY_EXHAUSTED {nbsp}
+
+
+[[ClearExpectationId]]
+== Clear Expectation Id
+`<http-mockserver:clear-expectation-id>`
+
+
+=== Parameters
+
+[%header%autowidth.spread]
+|===
+| Name | Type | Description | Default Value | Required
+| Configuration | String | The name of the configuration to use. | | *x*{nbsp}
+| Expectation Id a| String |  |  | *x*{nbsp}
+| Config Ref a| ConfigurationProvider |  The name of the configuration to be used to execute this component |  | *x*{nbsp}
+| Reconnection Strategy a| * <<Reconnect>>
+* <<ReconnectForever>> |  A retry strategy in case of connectivity errors |  | {nbsp}
+|===
+
+
+=== For Configurations
+
+* <<Config>> {nbsp}
+
+=== Throws
+
+* HTTP-MOCKSERVER:CONNECTIVITY {nbsp}
+* HTTP-MOCKSERVER:RETRY_EXHAUSTED {nbsp}
+
+
+[[ResetExpectations]]
+== Reset Expectations
+`<http-mockserver:reset-expectations>`
+
+
+=== Parameters
+
+[%header%autowidth.spread]
+|===
+| Name | Type | Description | Default Value | Required
+| Configuration | String | The name of the configuration to use. | | *x*{nbsp}
+| Config Ref a| ConfigurationProvider |  The name of the configuration to be used to execute this component |  | *x*{nbsp}
+| Reconnection Strategy a| * <<Reconnect>>
+* <<ReconnectForever>> |  A retry strategy in case of connectivity errors |  | {nbsp}
+|===
+
+
+=== For Configurations
+
+* <<Config>> {nbsp}
+
+=== Throws
+
+* HTTP-MOCKSERVER:CONNECTIVITY {nbsp}
+* HTTP-MOCKSERVER:RETRY_EXHAUSTED {nbsp}
+
+
+[[SetExpectation]]
+== Set Expectation
+`<http-mockserver:set-expectation>`
+
+
+=== Parameters
+
+[%header%autowidth.spread]
+|===
+| Name | Type | Description | Default Value | Required
+| Configuration | String | The name of the configuration to use. | | *x*{nbsp}
+| Expectation a| Binary |  |  #[payload] | {nbsp}
+| Config Ref a| ConfigurationProvider |  The name of the configuration to be used to execute this component |  | *x*{nbsp}
+| Reconnection Strategy a| * <<Reconnect>>
+* <<ReconnectForever>> |  A retry strategy in case of connectivity errors |  | {nbsp}
+|===
+
+
+=== For Configurations
+
+* <<Config>> {nbsp}
+
+=== Throws
+
+* HTTP-MOCKSERVER:CONNECTIVITY {nbsp}
+* HTTP-MOCKSERVER:RETRY_EXHAUSTED {nbsp}
+
+
+[[VerifyExpectation]]
+== Verify Expectation
+`<http-mockserver:verify-expectation>`
+
+
+=== Parameters
+
+[%header%autowidth.spread]
+|===
+| Name | Type | Description | Default Value | Required
+| Configuration | String | The name of the configuration to use. | | *x*{nbsp}
+| Expectation Id a| String |  |  | *x*{nbsp}
+| Comparison a| Enumeration, one of:
+
+** AT_LEAST
+** AT_MOST
+** EXACTLY |  |  | *x*{nbsp}
+| Count a| Number |  |  | *x*{nbsp}
+| Config Ref a| ConfigurationProvider |  The name of the configuration to be used to execute this component |  | *x*{nbsp}
+| Reconnection Strategy a| * <<Reconnect>>
+* <<ReconnectForever>> |  A retry strategy in case of connectivity errors |  | {nbsp}
+|===
+
+
+=== For Configurations
+
+* <<Config>> {nbsp}
+
+=== Throws
+
+* HTTP-MOCKSERVER:CONNECTIVITY {nbsp}
+* HTTP-MOCKSERVER:RETRY_EXHAUSTED {nbsp}
+
+
+
+== Types
+[[Reconnection]]
+=== Reconnection
+
+[cols=".^20%,.^25%,.^30%,.^15%,.^10%", options="header"]
+|======================
+| Field | Type | Description | Default Value | Required
+| Fails Deployment a| Boolean | When the application is deployed, a connectivity test is performed on all connectors. If set to true, deployment will fail if the test doesn't pass after exhausting the associated reconnection strategy |  | 
+| Reconnection Strategy a| * <<Reconnect>>
+* <<ReconnectForever>> | The reconnection strategy to use |  | 
+|======================
+
+[[Reconnect]]
+=== Reconnect
+
+[cols=".^20%,.^25%,.^30%,.^15%,.^10%", options="header"]
+|======================
+| Field | Type | Description | Default Value | Required
+| Frequency a| Number | How often (in ms) to reconnect |  | 
+| Blocking a| Boolean | If false, the reconnection strategy will run in a separate, non-blocking thread |  | 
+| Count a| Number | How many reconnection attempts to make |  | 
+|======================
+
+[[ReconnectForever]]
+=== Reconnect Forever
+
+[cols=".^20%,.^25%,.^30%,.^15%,.^10%", options="header"]
+|======================
+| Field | Type | Description | Default Value | Required
+| Frequency a| Number | How often (in ms) to reconnect |  | 
+| Blocking a| Boolean | If false, the reconnection strategy will run in a separate, non-blocking thread |  | 
+|======================
+
+[[ExpirationPolicy]]
+=== Expiration Policy
+
+[cols=".^20%,.^25%,.^30%,.^15%,.^10%", options="header"]
+|======================
+| Field | Type | Description | Default Value | Required
+| Max Idle Time a| Number | A scalar time value for the maximum amount of time a dynamic configuration instance should be allowed to be idle before it's considered eligible for expiration |  | 
+| Time Unit a| Enumeration, one of:
+
+** NANOSECONDS
+** MICROSECONDS
+** MILLISECONDS
+** SECONDS
+** MINUTES
+** HOURS
+** DAYS | A time unit that qualifies the maxIdleTime attribute |  | 
+|======================
+

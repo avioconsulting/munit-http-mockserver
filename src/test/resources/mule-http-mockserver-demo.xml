@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http-mockserver="http://www.mulesoft.org/schema/mule/http-mockserver" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http-mockserver http://www.mulesoft.org/schema/mule/http-mockserver/current/mule-http-mockserver.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="7f78891a-b15e-465a-a7bd-28a8402a884c" >
+		<http:request-connection host="0.0.0.0" port="${http.request.port}" />
+	</http:request-config>
+	<http-mockserver:config name="HTTP_MockServer_Config" doc:name="HTTP MockServer Config" >
+		<http-mockserver:connection port="${http.request.port}" />
+	</http-mockserver:config>
+	<flow name="mule-http-mockserver-test-verify-at-least">
+		<http-mockserver:set-expectation config-ref="HTTP_MockServer_Config">
+				<http-mockserver:expectation ><![CDATA[#[output application/json
+---
+{
+	"id": "valid-expectation-id-1",
+  "httpRequest" : {
+    "method" : "GET",
+    "path" : "/api/info"
+  },
+  "httpResponse" : {
+    "body" : "some_response_body",
+    "statusCode": 201
+  }
+}]]]></http-mockserver:expectation>
+			</http-mockserver:set-expectation>
+		<http:request method="GET" config-ref="HTTP_Request_configuration" path="/api/info"/>
+		<http-mockserver:verify-expectation comparison="AT_LEAST" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id-1" count="1"/>
+	</flow>
+</mule>
