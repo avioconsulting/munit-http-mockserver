@@ -9,11 +9,13 @@ This extension allows to use [MockServer](https://www.mock-server.com/#what-is-m
 Add this dependency to your application pom.xml
 
 ```
-<groupId>com.avioconsulting.munit</groupId>
-<artifactId>munit-http-mockserver</artifactId>
-<version>${munit-http-mockserver.version}</version>
-<classifier>mule-plugin</classifier>
-<scope>test</scope>
+<dependency>
+    <groupId>com.avioconsulting.munit</groupId>
+    <artifactId>munit-http-mockserver</artifactId>
+    <version>${munit-http-mockserver.version}</version>
+    <classifier>mule-plugin</classifier>
+    <scope>test</scope>
+</dependency>
 ```
 
 See latest version on [Maven Central](https://central.sonatype.com/search?namespace=com.avioconsulting.munit&name=munit-http-mockserver).
