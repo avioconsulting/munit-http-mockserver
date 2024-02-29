@@ -1,0 +1,68 @@
+project:
+  name: munit-http-mockserver
+  description: HTTP MockServer Extension for MUnit
+  longDescription: |
+    This extension allows to use [MockServer](https://www.mock-server.com/#what-is-mockserver) in MUnit Testing for mocking and verifying HTTP invocations from the application flows.
+
+  links:
+    homepage: https://github.com/avioconsulting/
+    documentation: https://avioconsulting.github.io/munit-http-mockserver/
+    license: https://github.com/avioconsulting/munit-http-mockserver/blob/main/LICENSE
+    contribute: https://github.com/avioconsulting/munit-http-mockserver/blob/main/CONTRIBUTING.adoc
+  authors:
+    - Adam DesJardin
+    - Manik Magar
+  license: BSD 2-Clause
+  inceptionYear: "2024"
+  tags:
+    - mule
+    - opentelemetry
+  java:
+    groupId: com.avioconsulting.mule
+    version: 8
+
+release:
+  github:
+    owner: 'avioconsulting'
+    overwrite: true
+    draft: false
+    sign: true
+    releaseName: '{{tagName}}'
+    skipTag: false
+    milestone:
+      close: false
+    changelog:
+      skipMergeCommits: true
+      formatted: ALWAYS
+      preset: conventional-commits
+      format: '- {{commitShortHash}} {{commitTitle}}'
+      contributors:
+        format: '- {{contributorName}}{{#contributorUsernameAsLink}} ({{.}}){{/contributorUsernameAsLink}}'
+      labelers:
+        - label: 'dependencies'
+          title: 'chore(deps):'
+          order: 130
+      categories:
+        - title: '⚙️  Dependencies'
+          key: 'dependencies'
+          order: 80
+          labels:
+            - 'dependencies'
+      hide:
+        categories:
+          - 'merge'
+        contributors:
+          - 'GitHub'
+
+checksum:
+  individual: true
+
+signing:
+  active: ALWAYS
+  armored: true
+  mode: MEMORY
+
+distributions:
+  mule-module:
+    artifacts:
+      - path: target/munit-http-mockserver-{{projectVersion}}-mule-plugin.jar
