@@ -13,6 +13,7 @@
   <artifactId>munit-http-mockserver</artifactId>
   <version>1.0.0</version>
   <packaging>mule-extension</packaging>
+  <name>${project.groupId}:${project.artifactId}</name>
   <description>MUnit HTTP MockServer</description>
   <url>https://github.com/${project.github.repository}</url>
   <developers>
