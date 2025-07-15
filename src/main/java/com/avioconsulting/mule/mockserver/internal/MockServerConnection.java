@@ -6,7 +6,10 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.mockserver.configuration.Configuration;
 import org.mockserver.integration.ClientAndServer;
+import org.mockserver.logging.MockServerLogger;
+import org.mockserver.socket.tls.KeyStoreFactory;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.connection.ConnectionValidationResult;
 import org.mule.runtime.api.exception.MuleRuntimeException;
@@ -20,6 +23,9 @@ import org.mule.runtime.http.api.domain.message.request.HttpRequest;
 import org.mule.runtime.http.api.domain.message.response.HttpResponse;
 
 import com.avioconsulting.mule.mockserver.api.mock.VerificationMethod;
+import org.slf4j.event.Level;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class MockServerConnection {
 
@@ -33,6 +39,14 @@ public class MockServerConnection {
     this.propertiesFilePath = propertiesFilePath;
     this.port = port;
     this.httpClient = httpClient;
+    String julFilePath = System.getProperty("java.util.logging.config.file");
+    if (julFilePath == null) {
+      // This is to avoid @MockServerLogger#configureLogger setting
+      // org.mockserver.logging.StandardOutConsoleHandler as a JUL handler.
+      // Due to classpath isolation, this class from test dependency
+      // is not visible at application and results in Class not found error
+      System.setProperty("java.util.logging.config.file", "");
+    }
     init();
   }
 
@@ -43,12 +57,20 @@ public class MockServerConnection {
     if (httpClient != null) {
       httpClient.stop();
     }
+    System.clearProperty("mockserver.propertyFile");
   }
 
   private void init() {
     Objects.requireNonNull(propertiesFilePath, "properties file path must not be null");
     System.setProperty("mockserver.propertyFile", propertiesFilePath);
-    clientAndServer = ClientAndServer.startClientAndServer(port);
+    Configuration configuration = Configuration.configuration()
+        .disableSystemOut(true)
+        .logLevel(Level.valueOf(System.getProperty("mockserver.logLevel", "INFO")))
+        .dynamicallyCreateCertificateAuthorityCertificate(true)
+        .directoryToSaveDynamicSSLCertificate("./target/mockserver-ssl/");
+    HttpsURLConnection.setDefaultSSLSocketFactory(
+        new KeyStoreFactory(configuration, new MockServerLogger()).sslContext().getSocketFactory());
+    clientAndServer = ClientAndServer.startClientAndServer(configuration, port);
     boolean started = clientAndServer.hasStarted(5, 10, TimeUnit.SECONDS);
     if (!started)
       throw new MuleRuntimeException(I18nMessageFactory.createStaticMessage("MockServer did not start in time"));

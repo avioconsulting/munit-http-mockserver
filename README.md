@@ -36,7 +36,7 @@ Consider a Mule app with following HTTP Request configuration and usage -
 
 ```
 
-To use MockServer for above request configuration, create a global configuration in your MUnit Test suite -
+To use MockServer for the above request configuration, create a global configuration in your MUnit Test suite
 
 ```xml
   <http-mockserver:config name="HTTP_MockServer_Config">
@@ -46,7 +46,7 @@ To use MockServer for above request configuration, create a global configuration
 
 For advanced configuration of the MockServer, [system properties approach](https://www.mock-server.com/mock_server/configuration_properties.html) can be used to define a custom `src/test/resources/mockserver.properties` file.
 
-Following test uses above configuration to set an expectation and verification using module operations -
+The following test uses the above configuration to set an expectation and verification using module operations
 
 ```xml
 <munit:test name="http-mock-valid-expectation-test" doc:id="faf60afd-0a61-415f-aab0-3f0565e49432" description="Set Valid expectation">
@@ -79,6 +79,21 @@ Following test uses above configuration to set an expectation and verification u
 
 To reduce the HTTP logging from MockServer, you may set `org.mockserver.log.MockServerEventLog` category to `WARN`.
 
+### HTTPS Support
+
+MockServer uses port unification to simplify the configuration so all protocols (i.e. HTTP, HTTPS / SSL, SOCKS, etc) are supported on the same port. This means when a request is sent over TLS (i.e. an HTTPS request) MockServer dynamically detects that the request is encrypted. See [MockServer HTTPS & TLS](https://mock-server.com/mock_server/HTTPS_TLS.html) for more details.
+
+The MockServer in this module is configured to dynamically create CA certificates and private key that is saved to `./target/mockserver-ssl` directory in local.
+
+Thus, the following configuration supports receiving HTTP as well as HTTPS inbound requests on 8081.
+
+```xml
+  <http-mockserver:config name="HTTP_MockServer_Config">
+    <http-mockserver:connection port="8081" />
+  </http-mockserver:config>
+```
+
+## Resources
 See [modules tests](./src/test/munit/) for more examples and  [connector documentation](./docs/1.0.x/munit-http-mockserver-documentation.adoc) for supported operations.
 
 Resources to learn about MockServer usage -
