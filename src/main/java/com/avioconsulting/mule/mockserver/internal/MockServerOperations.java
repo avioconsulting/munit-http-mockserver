@@ -28,8 +28,11 @@ public class MockServerOperations {
    *
    * @param mockServer
    *            the MockServer connection used to create the expectation
-   * @param matchRequest {@link HttpRequest} configuration for matching incoming requests
-   * @param respondWith {@link HttpResponse} configuration for the response to return on match
+   * @param matchRequest
+   *            {@link HttpRequest} configuration for matching incoming requests
+   * @param respondWith
+   *            {@link HttpResponse} configuration for the response to return on
+   *            match
    */
   @Alias("create-expectation")
   public void createExpectation(@Connection MockServerConnection mockServer,
