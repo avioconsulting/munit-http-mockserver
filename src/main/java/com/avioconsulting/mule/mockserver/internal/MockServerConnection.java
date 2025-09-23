@@ -15,6 +15,7 @@ import org.mule.runtime.api.connection.ConnectionValidationResult;
 import org.mule.runtime.api.exception.MuleRuntimeException;
 import org.mule.runtime.api.i18n.I18nMessageFactory;
 import org.mule.runtime.api.metadata.TypedValue;
+import org.mule.runtime.core.api.util.IOUtils;
 import org.mule.runtime.http.api.HttpConstants;
 import org.mule.runtime.http.api.client.HttpClient;
 import org.mule.runtime.http.api.domain.HttpProtocol;
@@ -26,6 +27,8 @@ import com.avioconsulting.mule.mockserver.api.mock.VerificationMethod;
 import org.slf4j.event.Level;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import static org.mockserver.model.HttpRequest.request;
 
 public class MockServerConnection {
 
@@ -78,7 +81,7 @@ public class MockServerConnection {
     baseUri = String.format("%s://%s:%d", "http", "localhost", clientAndServer.getPort());
   }
 
-  public void setExpectation(TypedValue<InputStream> expectation) {
+  public void createExpectation(TypedValue<InputStream> expectation) {
     sendRequest(expectation, "/mockserver/expectation");
   }
 
@@ -129,4 +132,46 @@ public class MockServerConnection {
       return ConnectionValidationResult.success();
     }
   }
+
+  public void createExpectation(String expectationId,
+      com.avioconsulting.mule.mockserver.api.mock.model.HttpRequest request,
+      com.avioconsulting.mule.mockserver.api.mock.model.HttpResponse response) {
+    org.mockserver.model.HttpRequest requestDefinition = request()
+        .withMethod(request.getMethod().name())
+        .withPath(request.getPath());
+    if (request.getRequestHeaders() != null) {
+      request.getRequestHeaders().forEach(requestDefinition::withHeader);
+    }
+    if (request.getQueryParameters() != null) {
+      request.getQueryParameters().forEach(requestDefinition::withQueryStringParameter);
+    }
+    if (request.getRequestBody() != null) {
+      requestDefinition.withBody(IOUtils.toString(request.getRequestBody().getValue()));
+      requestDefinition.withContentType(org.mockserver.model.MediaType
+          .parse(request.getRequestBody().getDataType().getMediaType().toString()));
+    }
+    org.mockserver.model.HttpResponse responseDefinition = org.mockserver.model.HttpResponse.response();
+    if (response == null) {
+      responseDefinition.withStatusCode(200);
+    } else {
+      responseDefinition.withStatusCode(response.getStatusCode())
+          .withReasonPhrase(response.getReasonPhrase());
+      if (response.getResponseBody() != null) {
+        responseDefinition.withBody(IOUtils.toString(response.getResponseBody().getValue()));
+        responseDefinition.withContentType(org.mockserver.model.MediaType
+            .parse(response.getResponseBody().getDataType().getMediaType().toString()));
+      }
+      if (response.getResponseHeaders() != null) {
+        response.getResponseHeaders().forEach(responseDefinition::withHeader);
+      }
+      if (response.getDelayTime() > 0) {
+        responseDefinition.withDelay(response.getDelayTimeUnit(), response.getDelayTime());
+      }
+    }
+
+    clientAndServer.when(requestDefinition)
+        .withId(expectationId)
+        .respond(responseDefinition);
+  }
+
 }

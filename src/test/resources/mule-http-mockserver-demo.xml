@@ -31,4 +31,30 @@ http://www.mulesoft.org/schema/mule/http-mockserver http://www.mulesoft.org/sche
 		<http:request method="GET" config-ref="HTTP_Request_configuration" path="/api/info"/>
 		<http-mockserver:verify-expectation comparison="AT_LEAST" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id-1" count="1"/>
 	</flow>
+	<flow name="mule-http-mockserver-object-test-verify-at-least">
+		<http-mockserver:create-expectation doc:name="Create expectation" doc:id="dac5bc23-ff50-4f05-9bb5-52399c510b16" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id-1">
+			<http-mockserver:match-request path="/api/info" method="GET">
+			</http-mockserver:match-request>
+
+		</http-mockserver:create-expectation>
+		<http:request method="GET" config-ref="HTTP_Request_configuration" path="/api/info"/>
+		<http-mockserver:verify-expectation comparison="AT_LEAST" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id-1" count="1"/>
+	</flow>
+	<flow name="mule-http-mockserver-request-test-with-payload">
+		<http-mockserver:create-expectation doc:name="Create expectation" doc:id="dac5bc23-ff50-4f05-9bb5-52399c510b16" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id-1">
+			<http-mockserver:match-request path="/api/info" method="POST">
+				<http-mockserver:request-body ><![CDATA[#[output application/xml
+---
+command: 'greet']]]></http-mockserver:request-body>
+			</http-mockserver:match-request>
+			<http-mockserver:respond-with statusCode="201" delayTime="2000">
+				<http-mockserver:response-body ><![CDATA[#[output application/json
+---
+{'say':'hello'}]]]></http-mockserver:response-body>
+			</http-mockserver:respond-with>
+		</http-mockserver:create-expectation>
+		<set-payload value="#[output application/xml --- command: 'greet']" />
+		<http:request method="POST" config-ref="HTTP_Request_configuration" path="/api/info"/>
+		<http-mockserver:verify-expectation comparison="AT_LEAST" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id-1" count="1"/>
+	</flow>
 </mule>

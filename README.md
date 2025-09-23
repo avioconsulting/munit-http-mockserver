@@ -1,6 +1,9 @@
 # HTTP MockServer Extension
 
-HTTP MockServer Extension for MUnit.
+<img src="./icon/icon.svg" width="200" height="200" alt="HTTP MockServer">
+
+HTTP MockServer Extension for MUnit
+
 
 This extension allows to use [MockServer](https://www.mock-server.com/#what-is-mockserver) in MUnit Testing for mocking and verifying HTTP invocations from the application flows.
 
@@ -46,7 +49,7 @@ To use MockServer for the above request configuration, create a global configura
 
 For advanced configuration of the MockServer, [system properties approach](https://www.mock-server.com/mock_server/configuration_properties.html) can be used to define a custom `src/test/resources/mockserver.properties` file.
 
-The following test uses the above configuration to set an expectation and verification using module operations
+The following tests use the above mock configuration to set expectations and verify using module operations.
 
 ```xml
 <munit:test name="http-mock-valid-expectation-test" doc:id="faf60afd-0a61-415f-aab0-3f0565e49432" description="Set Valid expectation">
@@ -75,6 +78,31 @@ The following test uses the above configuration to set an expectation and verifi
       <http-mockserver:verify-expectation comparison="AT_LEAST" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id-1" count="1"/>
     </munit:validation>
   </munit:test>
+
+<munit:test name="http-mockserver-test-create-expectation-with-payload" doc:id="352537f8-b597-497e-bf8e-4a0e1eb85abc" description="Use create expectations to mock">
+<munit:behavior >
+    <http-mockserver:create-expectation doc:name="Create expectation" doc:id="dac5bc23-ff50-4f05-9bb5-52399c510b16" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id-1">
+        <http-mockserver:match-request path="/api/info" method="POST">
+            <http-mockserver:request-body ><![CDATA[#[output application/xml
+---
+command: 'greet']]]></http-mockserver:request-body>
+        </http-mockserver:match-request>
+        <http-mockserver:respond-with >
+            <http-mockserver:response-body ><![CDATA[#[output application/json
+---
+{'say':'hello'}]]]></http-mockserver:response-body>
+        </http-mockserver:respond-with>
+    </http-mockserver:create-expectation>
+</munit:behavior>
+<munit:execution >
+    <set-payload value="#[output application/xml --- command: 'greet']" doc:name="Set Payload" doc:id="00431632-e146-45d4-81ea-dd3434b796aa" />
+    <http:request method="POST" doc:name="Request" doc:id="1602b9a6-8f56-4922-9f3f-e8271181a9d1" config-ref="HTTP_Request_configuration" path="/api/info"/>
+</munit:execution>
+<munit:validation >
+    <http-mockserver:verify-expectation comparison="EXACTLY" doc:name="Verify expectation" doc:id="88f31758-5e01-4cce-b771-ebd5c7d2f294" config-ref="HTTP_MockServer_Config" count="1" expectationId="valid-expectation-id-1"/>
+    <munit-tools:assert-equals doc:name="Assert equals" doc:id="d3382aa6-2ad2-4b67-9305-0b4033d0a6ee" actual="#[payload]" expected="#[output application/json --- {'say': 'hello'}]" message="Response payload does not match"/>
+</munit:validation>
+</munit:test>
 ```
 
 To reduce the HTTP logging from MockServer, you may set `org.mockserver.log.MockServerEventLog` category to `WARN`.

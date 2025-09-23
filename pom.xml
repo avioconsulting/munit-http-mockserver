@@ -11,7 +11,7 @@
 
   <groupId>com.avioconsulting.munit</groupId>
   <artifactId>munit-http-mockserver</artifactId>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <packaging>mule-extension</packaging>
   <name>${project.groupId}:${project.artifactId}</name>
   <description>MUnit HTTP MockServer</description>
