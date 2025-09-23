@@ -24,6 +24,16 @@ public class MockServerTests extends MuleArtifactFunctionalTestCase {
   }
 
   @Test
+  public void testObjectVerifyAtLeast() throws Exception {
+    runFlow("mule-http-mockserver-object-test-verify-at-least");
+  }
+
+  @Test
+  public void testRequestWithPayload() throws Exception {
+    runFlow("mule-http-mockserver-request-test-with-payload");
+  }
+
+  @Test
   public void testVerifyHTTPSAtLeast() throws Exception {
     runFlow("mule-https-mockserver-test-verify-at-least");
   }
