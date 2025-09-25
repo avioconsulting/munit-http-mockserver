@@ -8,6 +8,7 @@ import org.mule.runtime.api.metadata.TypedValue;
 import org.mule.runtime.extension.api.annotation.Alias;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.Content;
+import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.display.Summary;
 
 import com.avioconsulting.mule.mockserver.api.mock.VerificationMethod;
@@ -44,7 +45,8 @@ public class MockServerOperations {
 
   @Alias("verify-expectation")
   public void verifyExpectation(@Connection MockServerConnection mockServer, String expectationId,
-      VerificationMethod comparison, Integer count) {
+      @Optional(defaultValue = "EXACTLY") VerificationMethod comparison,
+      @Optional(defaultValue = "1") Integer count) {
     mockServer.verifyExpectation(expectationId, comparison, count);
   }
 

@@ -154,4 +154,28 @@ command: 'greet']]]></http-mockserver:request-body>
 			<munit-tools:assert-equals doc:name="Assert equals" doc:id="d3382aa6-2ad2-4b67-9305-0b4033d0a6ee" actual="#[payload]" expected="#[output application/json --- {'say': 'hello'}]" message="Response payload does not match"/>
 		</munit:validation>
 	</munit:test>
+	<munit:test name="http-mockserver-test-verify-expectation-with-defaults" doc:id="352537f8-b597-497e-bf8e-4a0e1eb85abc" description="Verify expectation by default matches only Exactly 1"  expectedErrorDescription="Request not found exactly once">
+		<munit:behavior >
+			<http-mockserver:create-expectation doc:name="Create expectation" doc:id="dac5bc23-ff50-4f05-9bb5-52399c510b16" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id-1">
+				<http-mockserver:match-request path="/api/info" method="POST">
+					<http-mockserver:request-body ><![CDATA[#[output application/xml
+---
+command: 'greet']]]></http-mockserver:request-body>
+				</http-mockserver:match-request>
+				<http-mockserver:respond-with >
+					<http-mockserver:response-body ><![CDATA[#[output application/json
+---
+{'say':'hello'}]]]></http-mockserver:response-body>
+				</http-mockserver:respond-with>
+			</http-mockserver:create-expectation>
+		</munit:behavior>
+		<munit:execution >
+			<set-payload value="#[output application/xml --- command: 'greet']" doc:name="Set Payload" doc:id="00431632-e146-45d4-81ea-dd3434b796aa" />
+			<http:request method="POST" doc:name="Request" doc:id="1602b9a6-8f56-4922-9f3f-e8271181a9d1" config-ref="HTTP_Request_configuration" path="/api/info" target="response-1"/>
+			<http:request method="POST" doc:name="Request" doc:id="1602b9a6-8f56-4922-9f3f-e8271181a9d1" config-ref="HTTP_Request_configuration" path="/api/info" target="response-2"/>
+		</munit:execution>
+		<munit:validation >
+			<http-mockserver:verify-expectation doc:name="Verify expectation" doc:id="88f31758-5e01-4cce-b771-ebd5c7d2f294" config-ref="HTTP_MockServer_Config" expectationId="valid-expectation-id-1"/>
+		</munit:validation>
+	</munit:test>
 </mule>
